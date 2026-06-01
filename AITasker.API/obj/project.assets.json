@@ -3735,11 +3735,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projects\\SWP391\\AITasker\\AITasker.API\\AITasker.API.csproj",
+      "projectUniqueName": "D:\\Projects\\SWP391\\AITasker\\AITasker.api\\AITasker.API.csproj",
       "projectName": "AITasker.API",
-      "projectPath": "D:\\Projects\\SWP391\\AITasker\\AITasker.API\\AITasker.API.csproj",
+      "projectPath": "D:\\Projects\\SWP391\\AITasker\\AITasker.api\\AITasker.API.csproj",
       "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects\\SWP391\\AITasker\\AITasker.API\\obj\\",
+      "outputPath": "D:\\Projects\\SWP391\\AITasker\\AITasker.api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config",

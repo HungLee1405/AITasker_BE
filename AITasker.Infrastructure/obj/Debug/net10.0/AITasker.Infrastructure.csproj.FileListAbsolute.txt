@@ -36,3 +36,4 @@ D:\Projects\SWP391\AITasker\AITasker.Infrastructure\obj\Debug\net10.0\AITasker.I
 d:\Projects\SWP391\AITasker\AITasker.Infrastructure\obj\Debug\net10.0\AITasker.3EB635C9.Up2Date
 d:\Projects\SWP391\AITasker\AITasker.Infrastructure\obj\Debug\net10.0\AITasker.Infrastructure.genruntimeconfig.cache
 d:\Projects\SWP391\AITasker\AITasker.Infrastructure\obj\Debug\net10.0\ref\AITasker.Infrastructure.dll
+D:\Projects\SWP391\AITasker\AITasker.Infrastructure\obj\Debug\net10.0\AITasker.Infrastructure.sourcelink.json

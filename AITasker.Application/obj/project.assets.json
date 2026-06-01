@@ -32,11 +32,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "d:\\Projects\\SWP391\\AITasker\\AITasker.Application\\AITasker.Application.csproj",
+      "projectUniqueName": "D:\\Projects\\SWP391\\AITasker\\AITasker.Application\\AITasker.Application.csproj",
       "projectName": "AITasker.Application",
-      "projectPath": "d:\\Projects\\SWP391\\AITasker\\AITasker.Application\\AITasker.Application.csproj",
+      "projectPath": "D:\\Projects\\SWP391\\AITasker\\AITasker.Application\\AITasker.Application.csproj",
       "packagesPath": "C:\\Users\\pc\\.nuget\\packages\\",
-      "outputPath": "d:\\Projects\\SWP391\\AITasker\\AITasker.Application\\obj\\",
+      "outputPath": "D:\\Projects\\SWP391\\AITasker\\AITasker.Application\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\pc\\AppData\\Roaming\\NuGet\\NuGet.Config",

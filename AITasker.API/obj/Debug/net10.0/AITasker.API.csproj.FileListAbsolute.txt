@@ -337,3 +337,4 @@ D:\Projects\SWP391\AITasker\AITasker.API\obj\Debug\net10.0\AITasker.501FA8E0.Up2
 D:\Projects\SWP391\AITasker\AITasker.API\obj\Debug\net10.0\AITasker.API.genruntimeconfig.cache
 D:\Projects\SWP391\AITasker\AITasker.API\obj\Debug\net10.0\ref\AITasker.API.dll
 D:\Projects\SWP391\AITasker\AITasker.API\bin\Debug\net10.0\BCrypt-Net-Next.dll
+D:\Projects\SWP391\AITasker\AITasker.api\obj\Debug\net10.0\AITasker.API.sourcelink.json
