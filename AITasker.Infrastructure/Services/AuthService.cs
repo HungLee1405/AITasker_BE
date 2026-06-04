@@ -27,13 +27,13 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
     {
-        // Find user by Username or Email
+        // Find user by Email
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Username == request.UsernameOrEmail || u.Email == request.UsernameOrEmail);
+            .FirstOrDefaultAsync(u => u.Email == request.Email);
 
         if (user == null)
         {
-            throw new ArgumentException("Tên đăng nhập hoặc Email không tồn tại.");
+            throw new ArgumentException("Email không tồn tại.");
         }
 
         if (user.Status == "Inactive")
@@ -60,7 +60,6 @@ public class AuthService : IAuthService
         {
             Token = token,
             Id = user.Id,
-            Username = user.Username,
             Email = user.Email,
             Role = user.Role,
             FullName = user.FullName
@@ -69,12 +68,6 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse> RegisterClientAsync(RegisterClientRequest request)
     {
-        // Check duplicate
-        if (await _context.Users.AnyAsync(u => u.Username == request.Username))
-        {
-            throw new ArgumentException("Tên đăng nhập đã tồn tại.");
-        }
-
         if (await _context.Users.AnyAsync(u => u.Email == request.Email))
         {
             throw new ArgumentException("Email đã tồn tại.");
@@ -83,7 +76,6 @@ public class AuthService : IAuthService
         // Create User
         var user = new User
         {
-            Username = request.Username,
             Email = request.Email,
             PasswordHash = _passwordHasher.Hash(request.Password),
             FullName = request.FullName,
@@ -110,7 +102,6 @@ public class AuthService : IAuthService
         {
             Token = token,
             Id = user.Id,
-            Username = user.Username,
             Email = user.Email,
             Role = user.Role,
             FullName = user.FullName
@@ -119,12 +110,6 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponse> RegisterExpertAsync(RegisterExpertRequest request)
     {
-        // Check duplicate
-        if (await _context.Users.AnyAsync(u => u.Username == request.Username))
-        {
-            throw new ArgumentException("Tên đăng nhập đã tồn tại.");
-        }
-
         if (await _context.Users.AnyAsync(u => u.Email == request.Email))
         {
             throw new ArgumentException("Email đã tồn tại.");
@@ -133,7 +118,6 @@ public class AuthService : IAuthService
         // Create User
         var user = new User
         {
-            Username = request.Username,
             Email = request.Email,
             PasswordHash = _passwordHasher.Hash(request.Password),
             FullName = request.FullName,
@@ -160,7 +144,48 @@ public class AuthService : IAuthService
         {
             Token = token,
             Id = user.Id,
-            Username = user.Username,
+            Email = user.Email,
+            Role = user.Role,
+            FullName = user.FullName
+        };
+    }
+
+    public async Task<LoginResponse> RegisterAdminAsync(RegisterAdminRequest request)
+    {
+        if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+        {
+            throw new ArgumentException("Email đã tồn tại.");
+        }
+
+        // Create User
+        var user = new User
+        {
+            Email = request.Email,
+            PasswordHash = _passwordHasher.Hash(request.Password),
+            FullName = request.FullName,
+            Role = "Admin",
+            Status = "Active",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        // Create Wallet for the user
+        var wallet = new Wallet
+        {
+            User = user,
+            Balance = 0.00m
+        };
+        user.Wallet = wallet;
+
+        await _context.Users.AddAsync(user);
+        await _context.SaveChangesAsync();
+
+        // Generate token
+        string token = _jwtTokenGenerator.GenerateToken(user);
+
+        return new LoginResponse
+        {
+            Token = token,
+            Id = user.Id,
             Email = user.Email,
             Role = user.Role,
             FullName = user.FullName

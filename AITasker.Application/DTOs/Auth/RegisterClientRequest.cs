@@ -4,10 +4,6 @@ namespace AITasker.Application.DTOs.Auth;
 
 public class RegisterClientRequest
 {
-    [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
-    [MinLength(3, ErrorMessage = "Tên đăng nhập phải có ít nhất 3 ký tự")]
-    public string Username { get; set; } = string.Empty;
-
     [Required(ErrorMessage = "Email không được để trống")]
     [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
     public string Email { get; set; } = string.Empty;

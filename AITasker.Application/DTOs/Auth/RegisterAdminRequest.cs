@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AITasker.Application.DTOs.Auth;
 
-public class RegisterExpertRequest
+public class RegisterAdminRequest
 {
     [Required(ErrorMessage = "Email không được để trống")]
     [EmailAddress(ErrorMessage = "Email không đúng định dạng")]

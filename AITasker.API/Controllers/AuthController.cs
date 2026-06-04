@@ -92,6 +92,30 @@ public class AuthController : ControllerBase
         }
     }
 
+    [HttpPost("register/admin")]
+    [Authorize(Roles = "Owner")]
+    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterAdminRequest request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var response = await _authService.RegisterAdminAsync(request);
+            return StatusCode(201, response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(new { Message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { Message = "Đã xảy ra lỗi hệ thống khi đăng ký Admin.", Details = ex.Message });
+        }
+    }
+
     [HttpPost("complete-profile")]
     [Authorize(Roles = "Expert")]
     public async Task<IActionResult> CompleteExpertProfile([FromBody] CompleteExpertProfileRequest request)

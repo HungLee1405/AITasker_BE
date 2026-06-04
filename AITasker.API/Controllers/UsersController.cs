@@ -8,6 +8,7 @@ namespace AITasker.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
@@ -18,6 +19,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("test-connection")]
+    [AllowAnonymous]
     public async Task<IActionResult> TestConnection()
     {
         try
@@ -40,7 +42,8 @@ public class UsersController : ControllerBase
         return Ok(new { Message = "Truy cập thành công! Bạn là Client hoặc Expert đã hoàn thành hồ sơ." });
     }
 
-    [HttpGet]
+    [HttpGet("getAll")]
+    [Authorize(Roles = "Admin,Owner")]
     public async Task<IActionResult> GetAll()
     {
         try
@@ -49,7 +52,6 @@ public class UsersController : ControllerBase
                 .Select(u => new
                 {
                     u.Id,
-                    u.Username,
                     u.Email,
                     u.FullName,
                     u.Role,
@@ -91,7 +93,6 @@ public class UsersController : ControllerBase
                 .Select(u => new
                 {
                     u.Id,
-                    u.Username,
                     u.Email,
                     u.FullName,
                     u.Role,
