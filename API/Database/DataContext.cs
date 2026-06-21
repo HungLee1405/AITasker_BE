@@ -15,8 +15,9 @@ public class DataContext : DbContext
 
     public DbSet<ApplicationUser> Users { get; set; }
     public DbSet<ExpertProfile> ExpertProfiles { get; set; }
+    public DbSet<Domain> Domains { get; set; }
+    public DbSet<Specialization> Specializations { get; set; }
     public DbSet<Wallet> Wallets { get; set; }
-    public DbSet<AICategoryDomain> AICategoryDomains { get; set; }
     public DbSet<Skill> Skills { get; set; }
     public DbSet<JobPost> JobPosts { get; set; }
     public DbSet<JobRequirement> JobRequirements { get; set; }
@@ -28,7 +29,7 @@ public class DataContext : DbContext
     public DbSet<Message> Messages { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<TransactionLog> TransactionLogs { get; set; }
-    public DbSet<AICategoryDomainExpertProfile> AICategoryDomainExpertProfiles { get; set; }
+    public DbSet<DomainExpertProfile> DomainExpertProfiles { get; set; }
     public DbSet<ExpertProfileSkill> ExpertProfileSkills { get; set; }
     public DbSet<JobPostSkill> JobPostSkills { get; set; }
     public DbSet<ProjectSkill> ProjectSkills { get; set; }
@@ -40,7 +41,8 @@ public class DataContext : DbContext
         modelBuilder.Entity<ApplicationUser>().HasKey(x => x.Id);
         modelBuilder.Entity<ExpertProfile>().HasKey(x => x.UserId);
         modelBuilder.Entity<Wallet>().HasKey(x => x.UserId);
-        modelBuilder.Entity<AICategoryDomain>().HasKey(x => x.Id);
+        modelBuilder.Entity<Domain>().HasKey(x => x.Id);
+        modelBuilder.Entity<Specialization>().HasKey(x => x.Id);
         modelBuilder.Entity<Skill>().HasKey(x => x.Id);
         modelBuilder.Entity<JobPost>().HasKey(x => x.Id);
         modelBuilder.Entity<JobRequirement>().HasKey(x => x.Id);
@@ -53,7 +55,7 @@ public class DataContext : DbContext
         modelBuilder.Entity<Review>().HasKey(x => x.Id);
         modelBuilder.Entity<TransactionLog>().HasKey(x => x.Id);
 
-        modelBuilder.Entity<AICategoryDomainExpertProfile>().HasKey(x => new { x.AICategoryDomainsId, x.ExpertProfilesUserId });
+        modelBuilder.Entity<DomainExpertProfile>().HasKey(x => new { x.DomainId, x.ExpertProfilesUserId });
 
         modelBuilder.Entity<ExpertProfileSkill>()
             .HasKey(x => new { x.ExpertProfilesUserId, x.SkillsId });
@@ -102,7 +104,7 @@ public class DataContext : DbContext
             if ((property.Name.EndsWith("Id") || property.Name == "Id") && 
                 property.ClrType != typeof(Guid) && property.ClrType != typeof(Guid?))
             {
-                property.SetColumnType("nvarchar(450)");
+                property.SetColumnType("varchar(255)");
             }
         }
 
@@ -112,16 +114,36 @@ public class DataContext : DbContext
         }
         modelBuilder.Entity<ExpertProfile>().HasOne<ApplicationUser>().WithOne().HasForeignKey<ExpertProfile>(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<Wallet>().HasOne<ApplicationUser>().WithOne().HasForeignKey<Wallet>(x => x.UserId).OnDelete(DeleteBehavior.NoAction);
-        modelBuilder.Entity<JobPost>().HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<JobPost>().HasOne(x => x.ClientUser).WithMany().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<Conversation>().HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<Conversation>().HasOne(x => x.Expert).WithMany().HasForeignKey(x => x.ExpertId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<Project>().HasOne(x => x.Client).WithMany().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<Project>().HasOne(x => x.Expert).WithMany().HasForeignKey(x => x.ExpertId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<Project>().HasOne(x => x.JobPost).WithMany().HasForeignKey(x => x.JobPostId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<Proposal>().HasOne(x => x.Expert).WithMany().HasForeignKey(x => x.ExpertId).OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<Proposal>().HasIndex(x => new { x.JobPostId, x.ExpertId }).IsUnique();
         modelBuilder.Entity<Review>().HasOne(x => x.CreatedBy).WithMany().HasForeignKey(x => x.CreatedById).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<Review>().HasOne(x => x.TargetUser).WithMany().HasForeignKey(x => x.TargetUserId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<TransactionLog>().HasOne(x => x.SourceWallet).WithMany().HasForeignKey(x => x.SourceWalletId).OnDelete(DeleteBehavior.NoAction);
         modelBuilder.Entity<TransactionLog>().HasOne(x => x.DestinationWallet).WithMany().HasForeignKey(x => x.DestinationWalletId).OnDelete(DeleteBehavior.NoAction);
+        
+        // Domain / Specialization mappings
+        modelBuilder.Entity<Specialization>()
+            .HasOne(x => x.Domain)
+            .WithMany(x => x.Specializations)
+            .HasForeignKey(x => x.DomainId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DomainExpertProfile>()
+            .HasOne(x => x.Domain)
+            .WithMany()
+            .HasForeignKey(x => x.DomainId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        modelBuilder.Entity<DomainExpertProfile>()
+            .HasOne(x => x.ExpertProfile)
+            .WithMany()
+            .HasForeignKey(x => x.ExpertProfilesUserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -37,7 +37,7 @@ public class UserJobPostDto
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public decimal Budget { get; set; }
-    public DateTime Deadline { get; set; }
+    public int Deadline { get; set; }
     public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }
@@ -47,7 +47,13 @@ public class UserProposalDto
     public string Id { get; set; } = string.Empty;
     public string JobPostId { get; set; } = string.Empty;
     public decimal BidAmount { get; set; }
-    public string CoverLetter { get; set; } = string.Empty;
+    public int EstimatedDuration { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Introduction { get; set; } = string.Empty;
+    public string Technical { get; set; } = string.Empty;
+    public string Implementation { get; set; } = string.Empty;
+    public string Dependencies { get; set; } = string.Empty;
+    public string? Portfolio { get; set; }
     public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }
