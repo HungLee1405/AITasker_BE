@@ -3,7 +3,7 @@ using AITasker_Modular.Modules.CategoryTagModule;
 using AITasker_Modular.Modules.ChatModule;
 using AITasker_Modular.Modules.InteractionModule;
 using AITasker_Modular.Modules.JobModule;
-using AITasker_Modular.Modules.JobPostModule; 
+using AITasker_Modular.Modules.JobPostModule;
 using AITasker_Modular.Modules.ProjectModule;
 using AITasker_Modular.Modules.UserModule;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +18,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Console.WriteLine(
+    builder.Configuration.GetConnectionString("DefaultConnection")
+);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -81,11 +85,11 @@ builder.Services.AddScoped<IInteractionService, InteractionService>();
 builder.Services.AddScoped<IProposalService, ProposalService>();
 
 // --- ĐỒNG BỘ ĐĂNG KÝ HỆ THỐNG JOBPOSTMODULE THỰC TẾ ---
-builder.Services.AddScoped<IJobPostService, JobPostService>(); 
+builder.Services.AddScoped<IJobPostService, JobPostService>();
 
 // --- ĐĂNG KÝ HỆ THỐNG AI MODULE ---
 builder.Services.AddHttpClient<GeminiUtil>();
-builder.Services.AddScoped<AiChatService>(); 
+builder.Services.AddScoped<AiChatService>();
 builder.Services.AddScoped<AiRecommendationService>();
 
 var app = builder.Build();
