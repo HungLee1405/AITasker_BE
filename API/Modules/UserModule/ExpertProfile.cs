@@ -1,13 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using AITasker_Modular.Modules.CategoryTagModule;
 
 namespace AITasker_Modular.Modules.UserModule;
 
 [Table("ExpertProfiles")]
 public class ExpertProfile
 {
-    [Key] // Changed Guid to string
-    public string UserId { get; set; } = string.Empty;
+    [Key]
+    public Guid UserId { get; set; }
     [Required]
     public string JobTitle { get; set; } = string.Empty;
     [Required]
@@ -19,4 +20,6 @@ public class ExpertProfile
     public decimal ReputationCredit { get; set; }
     public string? Location { get; set; }
     public double SuccessRate { get; set; }
+
+    public ICollection<ExpertProfileSkill> ExpertProfileSkills { get; set; } = new List<ExpertProfileSkill>();
 }

@@ -19,6 +19,7 @@ public class ProjectService : IProjectService
 
     public System.Threading.Tasks.Task<Project> UpdateProgressAsync(string projectId, string status) // Changed Guid to string
     {
-        return System.Threading.Tasks.Task.FromResult(new Project { Id = projectId, Status = status }); // Project.Id is string
+        Guid.TryParse(projectId, out var projectGuid);
+        return System.Threading.Tasks.Task.FromResult(new Project { Id = projectGuid, Status = status });
     }
 }

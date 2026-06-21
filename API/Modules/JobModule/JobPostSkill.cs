@@ -1,12 +1,16 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using AITasker_Modular.Modules.CategoryTagModule;
 
 namespace AITasker_Modular.Modules.JobModule;
 
+[Table("JobPostSkill")]
 public class JobPostSkill
 {
-    public string JobPostsId { get; set; } = string.Empty; // Changed Guid to string
-    public string SkillsId { get; set; } = string.Empty; // Changed Guid to string
+    public Guid JobPostsId { get; set; }
+    public Guid SkillsId { get; set; }
 
+    [JsonIgnore]
     public JobPost? JobPost { get; set; }
     public Skill? Skill { get; set; }
 }

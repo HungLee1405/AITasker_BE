@@ -7,6 +7,6 @@ namespace AITasker_Modular.Modules.UserModule;
 public class Wallet
 {
     [Key]
-    public string UserId { get; set; } = string.Empty;
+    public Guid UserId { get; set; }
     public decimal Balance { get; set; }
 }

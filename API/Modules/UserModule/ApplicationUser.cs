@@ -7,7 +7,7 @@ namespace AITasker_Modular.Modules.UserModule;
 public class ApplicationUser
 {
     [Key]
-    public string Id { get; set; } = string.Empty;
+    public Guid Id { get; set; }
     [Required]
     public string Email { get; set; } = string.Empty;
     [Required]

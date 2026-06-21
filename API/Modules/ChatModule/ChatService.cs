@@ -9,7 +9,7 @@ public class ChatService : IChatService
 
     public Task<Message> SendMessageAsync(Message message)
     {
-        message.Id = Guid.NewGuid().ToString(); // Changed to string
+        message.Id = Guid.NewGuid();
         return Task.FromResult(message);
     }
 }

@@ -1,14 +1,24 @@
+using AITasker_Modular.Database;
+using Microsoft.EntityFrameworkCore;
+
 namespace AITasker_Modular.Modules.CategoryTagModule;
 
 public class CategoryTagService : ICategoryTagService
 {
-    public Task<IReadOnlyList<AICategoryDomain>> GetCategoriesAsync()
+    private readonly DataContext _context;
+
+    public CategoryTagService(DataContext context)
     {
-        return Task.FromResult<IReadOnlyList<AICategoryDomain>>(new List<AICategoryDomain>());
+        _context = context;
     }
 
-    public Task<IReadOnlyList<Skill>> GetSkillsAsync()
+    public async Task<IReadOnlyList<AICategoryDomain>> GetCategoriesAsync()
     {
-        return Task.FromResult<IReadOnlyList<Skill>>(new List<Skill>());
+        return await _context.AICategoryDomains.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<IReadOnlyList<Skill>> GetSkillsAsync()
+    {
+        return await _context.Skills.AsNoTracking().ToListAsync();
     }
 }

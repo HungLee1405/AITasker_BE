@@ -28,6 +28,10 @@ public class DataContext : DbContext
     public DbSet<Message> Messages { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<TransactionLog> TransactionLogs { get; set; }
+    public DbSet<AICategoryDomainExpertProfile> AICategoryDomainExpertProfiles { get; set; }
+    public DbSet<ExpertProfileSkill> ExpertProfileSkills { get; set; }
+    public DbSet<JobPostSkill> JobPostSkills { get; set; }
+    public DbSet<ProjectSkill> ProjectSkills { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,16 +54,53 @@ public class DataContext : DbContext
         modelBuilder.Entity<TransactionLog>().HasKey(x => x.Id);
 
         modelBuilder.Entity<AICategoryDomainExpertProfile>().HasKey(x => new { x.AICategoryDomainsId, x.ExpertProfilesUserId });
-        modelBuilder.Entity<ExpertProfileSkill>().HasKey(x => new { x.ExpertProfilesUserId, x.SkillsId });
-        modelBuilder.Entity<JobPostSkill>().HasKey(x => new { x.JobPostsId, x.SkillsId });
-        modelBuilder.Entity<ProjectSkill>().HasKey(x => new { x.ProjectsId, x.SkillsId });
+
+        modelBuilder.Entity<ExpertProfileSkill>()
+            .HasKey(x => new { x.ExpertProfilesUserId, x.SkillsId });
+        modelBuilder.Entity<ExpertProfileSkill>()
+            .HasOne(x => x.ExpertProfile)
+            .WithMany(x => x.ExpertProfileSkills)
+            .HasForeignKey(x => x.ExpertProfilesUserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<ExpertProfileSkill>()
+            .HasOne(x => x.Skill)
+            .WithMany(x => x.ExpertProfileSkills)
+            .HasForeignKey(x => x.SkillsId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<JobPostSkill>()
+            .HasKey(x => new { x.JobPostsId, x.SkillsId });
+        modelBuilder.Entity<JobPostSkill>()
+            .HasOne(x => x.JobPost)
+            .WithMany(x => x.JobPostSkills)
+            .HasForeignKey(x => x.JobPostsId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<JobPostSkill>()
+            .HasOne(x => x.Skill)
+            .WithMany(x => x.JobPostSkills)
+            .HasForeignKey(x => x.SkillsId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ProjectSkill>()
+            .HasKey(x => new { x.ProjectsId, x.SkillsId });
+        modelBuilder.Entity<ProjectSkill>()
+            .HasOne(x => x.Project)
+            .WithMany(x => x.ProjectSkills)
+            .HasForeignKey(x => x.ProjectsId)
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<ProjectSkill>()
+            .HasOne(x => x.Skill)
+            .WithMany(x => x.ProjectSkills)
+            .HasForeignKey(x => x.SkillsId)
+            .OnDelete(DeleteBehavior.Cascade);
         foreach (var property in modelBuilder.Model.GetEntityTypes().SelectMany(t => t.GetProperties()))
         {
             if (property.ClrType == typeof(decimal) || property.ClrType == typeof(decimal?))
             {
                 property.SetColumnType("decimal(18,2)");
             }
-            if (property.Name.EndsWith("Id") || property.Name == "Id")
+            if ((property.Name.EndsWith("Id") || property.Name == "Id") && 
+                property.ClrType != typeof(Guid) && property.ClrType != typeof(Guid?))
             {
                 property.SetColumnType("nvarchar(450)");
             }

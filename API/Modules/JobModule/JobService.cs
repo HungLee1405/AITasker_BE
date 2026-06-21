@@ -17,25 +17,29 @@ public class JobService : IJobService
     {
         var jobPost = new JobPost
         {
-            Id = Guid.NewGuid().ToString(), // JobPost.Id is already string
-            ClientId = jobPostDto.ClientId,
+            Id = Guid.NewGuid(),
+            ClientId = Guid.TryParse(jobPostDto.ClientId, out var clientGuid) ? clientGuid : Guid.Empty,
             Title = jobPostDto.Title.Trim(),
             Description = jobPostDto.Description.Trim(),
             Budget = jobPostDto.Budget,
             Deadline = jobPostDto.Deadline,
             Status = "Open", 
             CreatedAt = DateTime.UtcNow,
-            AICategoryDomainId = jobPostDto.AICategoryDomainId
+            AICategoryDomainId = Guid.TryParse(jobPostDto.AICategoryDomainId, out var domainGuid) ? domainGuid : null
         };
 
         if (jobPostDto.SkillIds != null && jobPostDto.SkillIds.Any())
         {
-            var skills = await _context.Skills
-                                       .Where(s => jobPostDto.SkillIds.Contains(s.Id)) // Skill.Id is now string, so direct comparison is fine
-                                       .ToListAsync();
-            foreach (var skill in skills)
+            foreach (var sid in jobPostDto.SkillIds)
             {
-                jobPost.Skills.Add(skill);
+                if (Guid.TryParse(sid, out var sguid))
+                {
+                    jobPost.JobPostSkills.Add(new JobPostSkill
+                    {
+                        JobPostsId = jobPost.Id,
+                        SkillsId = sguid
+                    });
+                }
             }
         }
 
@@ -48,17 +52,22 @@ public class JobService : IJobService
     {
         return await _context.JobPosts
                              .Include(jp => jp.AICategoryDomain) 
-                             .Include(jp => jp.Skills) 
+                             .Include(jp => jp.JobPostSkills)
+                                 .ThenInclude(jps => jps.Skill)
                              .AsNoTracking() 
                              .ToListAsync();
     }
 
     public async Task<JobPost?> GetJobPostByIdAsync(string id)
     {
+        if (!Guid.TryParse(id, out var jobGuid))
+            return null;
+
         return await _context.JobPosts
                              .Include(jp => jp.AICategoryDomain)
-                             .Include(jp => jp.Skills)
+                             .Include(jp => jp.JobPostSkills)
+                                 .ThenInclude(jps => jps.Skill)
                              .AsNoTracking()
-                             .FirstOrDefaultAsync(jp => jp.Id == id);
-    }
+                             .FirstOrDefaultAsync(jp => jp.Id == jobGuid);
+     }
 }

@@ -6,8 +6,8 @@ namespace AITasker_Modular.Modules.CategoryTagModule;
 [Table("AICategoryDomains")]
 public class AICategoryDomain
 {
-    [Key] // Changed Guid to string
-    public string Id { get; set; } = string.Empty;
+    [Key]
+    public Guid Id { get; set; }
     [Required]
     public string Name { get; set; } = string.Empty;
 }

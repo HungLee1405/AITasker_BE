@@ -7,10 +7,10 @@ namespace AITasker_Modular.Modules.JobModule;
 [Table("Proposals")]
 public class Proposal
 {
-    [Key] // Changed Guid to string
-    public string Id { get; set; } = string.Empty;
-    public string JobPostId { get; set; } = string.Empty; // Changed Guid to string
-    public string ExpertId { get; set; } = string.Empty; // Changed Guid to string
+    [Key]
+    public Guid Id { get; set; }
+    public Guid JobPostId { get; set; }
+    public Guid ExpertId { get; set; }
     public decimal BidAmount { get; set; }
     [Required]
     public string CoverLetter { get; set; } = string.Empty;

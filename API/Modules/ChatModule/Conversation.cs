@@ -8,11 +8,11 @@ namespace AITasker_Modular.Modules.ChatModule;
 [Table("Conversations")]
 public class Conversation
 {
-    [Key] // Changed Guid to string
-    public string Id { get; set; } = string.Empty;
-    public string? OriginJobPostId { get; set; } // Changed Guid? to string?
-    public string ClientId { get; set; } = string.Empty; // Changed Guid to string
-    public string ExpertId { get; set; } = string.Empty; // Changed Guid to string
+    [Key]
+    public Guid Id { get; set; }
+    public Guid? OriginJobPostId { get; set; }
+    public Guid ClientId { get; set; }
+    public Guid ExpertId { get; set; }
     public DateTime CreatedAt { get; set; }
 
     public JobPost? OriginJobPost { get; set; }

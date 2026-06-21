@@ -6,9 +6,9 @@ namespace AITasker_Modular.Modules.ProjectModule;
 [Table("Tasks")]
 public class Task
 {
-    [Key] // Changed Guid to string
-    public string Id { get; set; } = string.Empty;
-    public string ProjectId { get; set; } = string.Empty; // Changed Guid to string
+    [Key]
+    public Guid Id { get; set; }
+    public Guid ProjectId { get; set; }
     [Required]
     public string Title { get; set; } = string.Empty;
     [Required]

@@ -8,11 +8,11 @@ namespace AITasker_Modular.Modules.InteractionModule;
 [Table("TransactionLogs")]
 public class TransactionLog
 {
-    [Key] // Changed Guid to string
-    public string Id { get; set; } = string.Empty;
-    public string? ProjectId { get; set; } // Changed Guid? to string?
-    public string? SourceWalletId { get; set; } // Changed Guid? to string?
-    public string? DestinationWalletId { get; set; } // Changed Guid? to string?
+    [Key]
+    public Guid Id { get; set; }
+    public Guid? ProjectId { get; set; }
+    public Guid? SourceWalletId { get; set; }
+    public Guid? DestinationWalletId { get; set; }
     public decimal Amount { get; set; }
     [Required]
     public string Type { get; set; } = string.Empty;

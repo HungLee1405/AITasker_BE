@@ -6,9 +6,9 @@ namespace AITasker_Modular.Modules.JobModule;
 [Table("JobRequirements")]
 public class JobRequirement
 {
-    [Key] // Changed Guid to string
-    public string Id { get; set; } = string.Empty;
-    public string JobPostId { get; set; } = string.Empty; // Changed Guid to string
+    [Key]
+    public Guid Id { get; set; }
+    public Guid JobPostId { get; set; }
     [Required]
     public string UseCaseName { get; set; } = string.Empty;
     public string? Description { get; set; }

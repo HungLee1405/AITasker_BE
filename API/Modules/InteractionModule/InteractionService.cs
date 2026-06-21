@@ -9,7 +9,7 @@ public class InteractionService : IInteractionService
 
     public Task<TransactionLog> RecordTransactionAsync(TransactionLog transactionLog)
     {
-        transactionLog.Id = Guid.NewGuid().ToString(); // Changed to string
+        transactionLog.Id = Guid.NewGuid();
         return Task.FromResult(transactionLog);
     }
 }

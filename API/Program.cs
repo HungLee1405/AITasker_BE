@@ -32,6 +32,32 @@ using (var scope = app.Services.CreateScope())
     {
         var db = services.GetRequiredService<DataContext>();
         await db.Database.MigrateAsync();
+
+        if (!await db.AICategoryDomains.AnyAsync())
+        {
+            db.AICategoryDomains.AddRange(new List<AICategoryDomain>
+            {
+                new AICategoryDomain { Id = Guid.NewGuid(), Name = "Natural Language Processing (NLP)" },
+                new AICategoryDomain { Id = Guid.NewGuid(), Name = "Computer Vision" },
+                new AICategoryDomain { Id = Guid.NewGuid(), Name = "Generative AI" },
+                new AICategoryDomain { Id = Guid.NewGuid(), Name = "Machine Learning Engineering" }
+            });
+        }
+
+        if (!await db.Skills.AnyAsync())
+        {
+            db.Skills.AddRange(new List<Skill>
+            {
+                new Skill { Id = Guid.NewGuid(), Name = "Python" },
+                new Skill { Id = Guid.NewGuid(), Name = "PyTorch" },
+                new Skill { Id = Guid.NewGuid(), Name = "TensorFlow" },
+                new Skill { Id = Guid.NewGuid(), Name = "Transformers (HuggingFace)" },
+                new Skill { Id = Guid.NewGuid(), Name = "LLM Fine-Tuning" },
+                new Skill { Id = Guid.NewGuid(), Name = "Prompt Engineering" },
+                new Skill { Id = Guid.NewGuid(), Name = "Docker" }
+            });
+        }
+        await db.SaveChangesAsync();
     }
     catch (Exception ex)
     {

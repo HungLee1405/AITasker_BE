@@ -1,12 +1,16 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using AITasker_Modular.Modules.UserModule;
 
 namespace AITasker_Modular.Modules.CategoryTagModule;
 
+[Table("ExpertProfileSkill")]
 public class ExpertProfileSkill
 {
-    public string ExpertProfilesUserId { get; set; } = string.Empty; // Changed Guid to string
-    public string SkillsId { get; set; } = string.Empty; // Changed Guid to string
+    public Guid ExpertProfilesUserId { get; set; }
+    public Guid SkillsId { get; set; }
 
+    [JsonIgnore]
     public ExpertProfile? ExpertProfile { get; set; }
     public Skill? Skill { get; set; }
 }
