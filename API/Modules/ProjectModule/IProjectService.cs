@@ -9,7 +9,7 @@ namespace AITasker_Modular.Modules.ProjectModule
         Task<IEnumerable<Project>> GetProjectsByClientAsync(Guid clientId);
         Task<IEnumerable<Project>> GetProjectsByExpertAsync(Guid expertId);
         Task<Project?> UpdateProjectStatusAsync(Guid projectId, string status);
-        Task<Project?> SubmitProjectLinkAsync(Guid projectId, string projectLink); // Expert nộp sản phẩm/link nghiệm thu
+        Task<Project?> SubmitProjectLinkAsync(Guid projectId, string projectLink);
         Task<Project?> GetProjectByIdAsync(Guid projectId);
         Task<MiniTask?> UpdateMiniTaskAsync(Guid miniTaskId, bool isCompleted, string? feedbackContent, Guid? feedbackSenderId);
         Task<Task?> GetTaskWithTimelineAsync(Guid taskId);
@@ -21,6 +21,8 @@ namespace AITasker_Modular.Modules.ProjectModule
         Task<Task?> SubmitTaskForReviewAsync(Guid taskId);
         Task<Task?> ReviewTaskAsync(Guid taskId, bool approve, string? feedbackContent, Guid feedbackSenderId);
         Task<Project?> CreateProjectFromProposalAsync(Guid proposalId);
+
+        Task<bool> LockProjectForDisputeAsync(Guid projectId);
+        Task<decimal> PayoutDisputeEscrowAsync(Guid projectId, string winnerRole);
     }
 }
-

@@ -4,6 +4,7 @@ using AITasker_Modular.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AITasker_Modular.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260622061255_RemoveProposalTitleTechnicalDependencies")]
+    partial class RemoveProposalTitleTechnicalDependencies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,38 +24,6 @@ namespace AITasker_Modular.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
-
-            modelBuilder.Entity("AITasker_Modular.Database.ProposalAiChat", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("AiResponse")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("ExpertId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("JobPostId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("UserMessage")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ExpertId");
-
-                    b.HasIndex("JobPostId");
-
-                    b.ToTable("ProposalAiChats");
-                });
 
             modelBuilder.Entity("AITasker_Modular.Modules.CategoryTagModule.Domain", b =>
                 {
@@ -194,90 +165,6 @@ namespace AITasker_Modular.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("AITasker_Modular.Modules.DisputeModule.Dispute", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("ClientEvidenceUrl")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("EvidenceDeadline")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("ExpertEvidenceUrl")
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid?>("HandlerStaffId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ResolutionVerdict")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HandlerStaffId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("Disputes");
-                });
-
-            modelBuilder.Entity("AITasker_Modular.Modules.DisputeModule.Report", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("EvidenceUrl")
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid?>("HandlerStaffId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("ProjectId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Reason")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid>("ReporterId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HandlerStaffId");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("ReporterId");
-
-                    b.ToTable("Reports");
-                });
-
             modelBuilder.Entity("AITasker_Modular.Modules.InteractionModule.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -354,9 +241,6 @@ namespace AITasker_Modular.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
-
-                    b.Property<string>("AttachmentUrl")
-                        .HasColumnType("longtext");
 
                     b.Property<decimal>("Budget")
                         .HasColumnType("decimal(18,2)");
@@ -449,9 +333,6 @@ namespace AITasker_Modular.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
-
-                    b.Property<string>("AttachmentUrl")
-                        .HasColumnType("longtext");
 
                     b.Property<decimal>("BidAmount")
                         .HasColumnType("decimal(18,2)");
@@ -630,9 +511,6 @@ namespace AITasker_Modular.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<DateTime?>("AppointedAt")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<string>("AvatarUrl")
                         .HasColumnType("longtext");
 
@@ -653,9 +531,6 @@ namespace AITasker_Modular.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("StaffCode")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Status")
@@ -715,25 +590,6 @@ namespace AITasker_Modular.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Wallets");
-                });
-
-            modelBuilder.Entity("AITasker_Modular.Database.ProposalAiChat", b =>
-                {
-                    b.HasOne("AITasker_Modular.Modules.UserModule.ApplicationUser", "Expert")
-                        .WithMany()
-                        .HasForeignKey("ExpertId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("AITasker_Modular.Modules.JobModule.JobPost", "JobPost")
-                        .WithMany()
-                        .HasForeignKey("JobPostId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Expert");
-
-                    b.Navigation("JobPost");
                 });
 
             modelBuilder.Entity("AITasker_Modular.Modules.CategoryTagModule.DomainExpertProfile", b =>
@@ -828,50 +684,6 @@ namespace AITasker_Modular.Migrations
                     b.Navigation("Conversation");
 
                     b.Navigation("Sender");
-                });
-
-            modelBuilder.Entity("AITasker_Modular.Modules.DisputeModule.Dispute", b =>
-                {
-                    b.HasOne("AITasker_Modular.Modules.UserModule.ApplicationUser", "HandlerStaff")
-                        .WithMany()
-                        .HasForeignKey("HandlerStaffId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("AITasker_Modular.Modules.ProjectModule.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("HandlerStaff");
-
-                    b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("AITasker_Modular.Modules.DisputeModule.Report", b =>
-                {
-                    b.HasOne("AITasker_Modular.Modules.UserModule.ApplicationUser", "HandlerStaff")
-                        .WithMany()
-                        .HasForeignKey("HandlerStaffId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("AITasker_Modular.Modules.ProjectModule.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("AITasker_Modular.Modules.UserModule.ApplicationUser", "Reporter")
-                        .WithMany()
-                        .HasForeignKey("ReporterId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("HandlerStaff");
-
-                    b.Navigation("Project");
-
-                    b.Navigation("Reporter");
                 });
 
             modelBuilder.Entity("AITasker_Modular.Modules.InteractionModule.Review", b =>

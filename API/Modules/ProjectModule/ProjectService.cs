@@ -7,7 +7,6 @@ using AITasker_Modular.Database;
 using AITasker_Modular.Modules.JobModule;
 
 namespace AITasker_Modular.Modules.ProjectModule
-
 {
     public class ProjectService : IProjectService
     {
@@ -46,7 +45,6 @@ namespace AITasker_Modular.Modules.ProjectModule
                 .ToListAsync();
         }
 
-
         public async Task<Project?> UpdateProjectStatusAsync(Guid projectId, string status)
         {
             var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == projectId);
@@ -81,7 +79,6 @@ namespace AITasker_Modular.Modules.ProjectModule
                     .ThenInclude(t => t.MiniTasks)
                 .FirstOrDefaultAsync(x => x.Id == projectId);
         }
-
 
         public async Task<MiniTask?> UpdateMiniTaskAsync(Guid miniTaskId, bool isCompleted, string? feedbackContent, Guid? feedbackSenderId)
         {
@@ -345,6 +342,40 @@ namespace AITasker_Modular.Modules.ProjectModule
             await _context.SaveChangesAsync();
             return await GetProjectByIdAsync(newProject.Id);
         }
+
+        // ======================================================================
+        // ĐỤC THÊM LOGIC ĐẶC QUYỀN TÀI PHÁN ĐỂ ĐỒNG BỘ LIÊN MODULE VỚI DISPUTEMODULE
+        // ======================================================================
+
+        public async Task<bool> LockProjectForDisputeAsync(Guid projectId)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == projectId);
+            if (project == null) return false;
+
+            project.Status = "Disputed"; // Đóng băng trạng thái hợp đồng dự án
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<decimal> PayoutDisputeEscrowAsync(Guid projectId, string winnerRole)
+        {
+            var project = await _context.Projects.FirstOrDefaultAsync(x => x.Id == projectId);
+            if (project == null) return 0;
+
+            decimal moneyToTransfer = project.EscrowBalance;
+            if (moneyToTransfer <= 0) return 0;
+
+            // Phân định trạng thái kết thúc dự án dựa theo phán quyết của Staff
+            if (winnerRole.ToLower() == "expert") {
+                project.Status = "Withdrawn"; 
+            } else if (winnerRole.ToLower() == "client") {
+                project.Status = "Cancelled"; 
+            }
+
+            project.EscrowBalance = 0; // Trút sạch tiền ký quỹ đóng băng về 0
+            await _context.SaveChangesAsync();
+
+            return moneyToTransfer; // Trả số tiền cào được ra ngoài cho DisputeService đem đi phân phối về Ví
+        }
     }
 }
-
