@@ -4,6 +4,7 @@ using AITasker_Modular.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AITasker_Modular.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260630155723_MoveProposalImplementationToSeparateTable")]
+    partial class MoveProposalImplementationToSeparateTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,7 +105,7 @@ namespace AITasker_Modular.Migrations
                         {
                             Id = new Guid("11111111-1111-1111-1111-111111111111"),
                             TotalBalance = 0m,
-                            UpdatedAt = new DateTime(2026, 6, 30, 17, 15, 23, 583, DateTimeKind.Utc).AddTicks(9570)
+                            UpdatedAt = new DateTime(2026, 6, 30, 15, 57, 20, 382, DateTimeKind.Utc).AddTicks(9169)
                         });
                 });
 
@@ -518,9 +521,6 @@ namespace AITasker_Modular.Migrations
                     b.Property<int>("DurationValue")
                         .HasColumnType("int");
 
-                    b.Property<string>("Implementation")
-                        .HasColumnType("longtext");
-
                     b.Property<Guid?>("SpecializationId")
                         .HasColumnType("char(36)");
 
@@ -543,29 +543,6 @@ namespace AITasker_Modular.Migrations
                     b.ToTable("JobPosts");
                 });
 
-            modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobPostMiniTask", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("JobPostTaskId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JobPostTaskId");
-
-                    b.ToTable("JobPostMiniTasks");
-                });
-
             modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobPostSkill", b =>
                 {
                     b.Property<Guid>("JobPostsId")
@@ -581,24 +558,28 @@ namespace AITasker_Modular.Migrations
                     b.ToTable("JobPostSkill");
                 });
 
-            modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobPostTask", b =>
+            modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobRequirement", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
                     b.Property<Guid>("JobPostId")
                         .HasColumnType("char(36)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("UseCaseName")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("JobPostId");
 
-                    b.ToTable("JobPostTasks");
+                    b.ToTable("JobRequirements");
                 });
 
             modelBuilder.Entity("AITasker_Modular.Modules.JobModule.Proposal", b =>
@@ -652,6 +633,9 @@ namespace AITasker_Modular.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<DateTime?>("Deadline")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<int>("Duration")
                         .HasColumnType("int");
 
@@ -700,6 +684,9 @@ namespace AITasker_Modular.Migrations
 
                     b.Property<DateTime?>("Deadline")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Duration")
+                        .HasColumnType("int");
 
                     b.Property<string>("FeedbackContent")
                         .HasColumnType("longtext");
@@ -1160,17 +1147,6 @@ namespace AITasker_Modular.Migrations
                     b.Navigation("Specialization");
                 });
 
-            modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobPostMiniTask", b =>
-                {
-                    b.HasOne("AITasker_Modular.Modules.JobModule.JobPostTask", "JobPostTask")
-                        .WithMany("JobPostMiniTasks")
-                        .HasForeignKey("JobPostTaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("JobPostTask");
-                });
-
             modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobPostSkill", b =>
                 {
                     b.HasOne("AITasker_Modular.Modules.JobModule.JobPost", "JobPost")
@@ -1190,12 +1166,12 @@ namespace AITasker_Modular.Migrations
                     b.Navigation("Skill");
                 });
 
-            modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobPostTask", b =>
+            modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobRequirement", b =>
                 {
                     b.HasOne("AITasker_Modular.Modules.JobModule.JobPost", "JobPost")
-                        .WithMany("JobPostTasks")
+                        .WithMany("JobRequirements")
                         .HasForeignKey("JobPostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("JobPost");
@@ -1366,12 +1342,7 @@ namespace AITasker_Modular.Migrations
                 {
                     b.Navigation("JobPostSkills");
 
-                    b.Navigation("JobPostTasks");
-                });
-
-            modelBuilder.Entity("AITasker_Modular.Modules.JobModule.JobPostTask", b =>
-                {
-                    b.Navigation("JobPostMiniTasks");
+                    b.Navigation("JobRequirements");
                 });
 
             modelBuilder.Entity("AITasker_Modular.Modules.JobModule.Proposal", b =>

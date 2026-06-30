@@ -7,5 +7,6 @@ namespace AITasker_Modular.Modules.ProjectModule.DTOs
         public bool IsCompleted { get; set; }
         public string? FeedbackContent { get; set; }
         public Guid? FeedbackSenderId { get; set; }
+        public int? DeadlineDays { get; set; }
     }
 }

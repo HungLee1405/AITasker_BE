@@ -116,6 +116,22 @@ using (var scope = app.Services.CreateScope())
                 command.CommandText = "ALTER TABLE JobPosts DROP COLUMN Deadline; ALTER TABLE JobPosts ADD Deadline INT NOT NULL DEFAULT 0;";
                 await command.ExecuteNonQueryAsync();
             }
+
+            command.CommandText = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'MiniTasks' AND COLUMN_NAME = 'Deadline';";
+            var miniTaskDeadlineCol = (string?)await command.ExecuteScalarAsync();
+            if (miniTaskDeadlineCol == null)
+            {
+                command.CommandText = "ALTER TABLE MiniTasks ADD Deadline DATETIME NULL;";
+                await command.ExecuteNonQueryAsync();
+            }
+
+            command.CommandText = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'MiniTasks' AND COLUMN_NAME = 'Duration';";
+            var miniTaskDurationCol = (string?)await command.ExecuteScalarAsync();
+            if (miniTaskDurationCol == null)
+            {
+                command.CommandText = "ALTER TABLE MiniTasks ADD Duration INT NOT NULL DEFAULT 0;";
+                await command.ExecuteNonQueryAsync();
+            }
         }
 
         // Seed Domains
@@ -233,17 +249,22 @@ using (var scope = app.Services.CreateScope())
                 DomainId = nlpDomain?.Id,
                 SpecializationId = chatbotSpec?.Id,
                 DurationValue = 15,
-                DurationUnit = "Days"
+                DurationUnit = "Days",
+                Implementation = "[{\"Title\":\"Thiết lập cơ sở dữ liệu Vector (ChromaDB)\",\"MiniTasks\":[{\"Title\":\"Cấu hình DB vector để indexing tài liệu.\",\"Duration\":5}]},{\"Title\":\"Tích hợp mô hình ngôn ngữ lớn (GPT-4o)\",\"MiniTasks\":[{\"Title\":\"Xử lý prompt template và kết nối LLM API.\",\"Duration\":7}]},{\"Title\":\"Xây dựng API Endpoint hỏi đáp\",\"MiniTasks\":[{\"Title\":\"Tạo RESTful endpoint kết nối frontend.\",\"Duration\":3}]}]"
             };
             db.JobPosts.Add(testJob);
 
-            // Seed JobRequirements (usecases)
-            db.JobRequirements.AddRange(new List<JobRequirement>
-            {
-                new JobRequirement { Id = Guid.Parse("44444444-4444-4444-4444-444444444441"), JobPostId = jobId, UseCaseName = "Thiết lập cơ sở dữ liệu Vector (ChromaDB)", Description = "Cấu hình DB vector để indexing tài liệu." },
-                new JobRequirement { Id = Guid.Parse("44444444-4444-4444-4444-444444444442"), JobPostId = jobId, UseCaseName = "Tích hợp mô hình ngôn ngữ lớn (GPT-4o)", Description = "Xử lý prompt template và kết nối LLM API." },
-                new JobRequirement { Id = Guid.Parse("44444444-4444-4444-4444-444444444443"), JobPostId = jobId, UseCaseName = "Xây dựng API Endpoint hỏi đáp", Description = "Tạo RESTful endpoint kết nối frontend." }
-            });
+            var task1 = new JobPostTask { Id = Guid.NewGuid(), JobPostId = jobId, Title = "Thiết lập cơ sở dữ liệu Vector (ChromaDB)" };
+            task1.JobPostMiniTasks.Add(new JobPostMiniTask { Id = Guid.NewGuid(), JobPostTaskId = task1.Id, Title = "Cấu hình DB vector để indexing tài liệu.", Duration = 5 });
+            db.JobPostTasks.Add(task1);
+
+            var task2 = new JobPostTask { Id = Guid.NewGuid(), JobPostId = jobId, Title = "Tích hợp mô hình ngôn ngữ lớn (GPT-4o)" };
+            task2.JobPostMiniTasks.Add(new JobPostMiniTask { Id = Guid.NewGuid(), JobPostTaskId = task2.Id, Title = "Xử lý prompt template và kết nối LLM API.", Duration = 7 });
+            db.JobPostTasks.Add(task2);
+
+            var task3 = new JobPostTask { Id = Guid.NewGuid(), JobPostId = jobId, Title = "Xây dựng API Endpoint hỏi đáp" };
+            task3.JobPostMiniTasks.Add(new JobPostMiniTask { Id = Guid.NewGuid(), JobPostTaskId = task3.Id, Title = "Tạo RESTful endpoint kết nối frontend.", Duration = 3 });
+            db.JobPostTasks.Add(task3);
         }
 
         // Seed a Test Proposal
@@ -258,11 +279,23 @@ using (var scope = app.Services.CreateScope())
                 BidAmount = 1200m,
                 EstimatedDuration = 12,
                 Introduction = "Chào anh/chị, tôi là chuyên gia AI với 3 năm kinh nghiệm phát triển các hệ thống RAG và LLM.",
-                Implementation = "Tuần 1: Thiết lập Vector DB và tiền xử lý data. Tuần 2: Tích hợp LLM và hoàn thiện API.",
                 Status = "Pending",
                 CreatedAt = DateTime.UtcNow
             };
             db.Proposals.Add(testProposal);
+        }
+
+        if (!await db.ProposalTasks.AnyAsync(t => t.ProposalId == proposalId))
+        {
+            var task1 = new ProposalTask { Id = Guid.NewGuid(), ProposalId = proposalId, Title = "Thiết lập Vector DB và tiền xử lý data" };
+            task1.ProposalMiniTasks.Add(new ProposalMiniTask { Id = Guid.NewGuid(), ProposalTaskId = task1.Id, Title = "Cấu hình ChromaDB", Duration = 10 });
+            task1.ProposalMiniTasks.Add(new ProposalMiniTask { Id = Guid.NewGuid(), ProposalTaskId = task1.Id, Title = "Tiền xử lý data", Duration = 14 });
+            db.ProposalTasks.Add(task1);
+
+            var task2 = new ProposalTask { Id = Guid.NewGuid(), ProposalId = proposalId, Title = "Tích hợp LLM và hoàn thiện API" };
+            task2.ProposalMiniTasks.Add(new ProposalMiniTask { Id = Guid.NewGuid(), ProposalTaskId = task2.Id, Title = "Tích hợp LLM", Duration = 8 });
+            task2.ProposalMiniTasks.Add(new ProposalMiniTask { Id = Guid.NewGuid(), ProposalTaskId = task2.Id, Title = "Hoàn thiện API", Duration = 12 });
+            db.ProposalTasks.Add(task2);
         }
 
         // Seed an Already Accepted Proposal and Active Project for testing
@@ -298,11 +331,18 @@ using (var scope = app.Services.CreateScope())
                 BidAmount = 1800m,
                 EstimatedDuration = 25,
                 Introduction = "Tôi có nhiều kinh nghiệm làm Recommendation System.",
-                Implementation = "Huấn luyện mô hình và deploy lên AWS.",
                 Status = "Accepted",
                 CreatedAt = DateTime.UtcNow
             };
             db.Proposals.Add(testProposal2);
+        }
+
+        if (!await db.ProposalTasks.AnyAsync(t => t.ProposalId == acceptedProposalId))
+        {
+            var p2task1 = new ProposalTask { Id = Guid.NewGuid(), ProposalId = acceptedProposalId, Title = "Huấn luyện mô hình và deploy lên AWS" };
+            p2task1.ProposalMiniTasks.Add(new ProposalMiniTask { Id = Guid.NewGuid(), ProposalTaskId = p2task1.Id, Title = "Huấn luyện Recommendation System", Duration = 20 });
+            p2task1.ProposalMiniTasks.Add(new ProposalMiniTask { Id = Guid.NewGuid(), ProposalTaskId = p2task1.Id, Title = "Deploy AWS ECS", Duration = 15 });
+            db.ProposalTasks.Add(p2task1);
         }
 
         var testProjectId = Guid.Parse("66666666-6666-6666-6666-666666666666");
@@ -370,7 +410,8 @@ using (var scope = app.Services.CreateScope())
                 TaskId = task1Id,
                 Title = "Viết script python cào log click",
                 IsCompleted = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Deadline = DateTime.UtcNow.AddDays(7)
             });
         }
 

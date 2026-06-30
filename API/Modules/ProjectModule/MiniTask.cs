@@ -17,6 +17,7 @@ public class MiniTask
     public string? FeedbackContent { get; set; }
     public Guid? FeedbackSenderId { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime? Deadline { get; set; }
 
     [JsonIgnore]
     public Task? Task { get; set; }

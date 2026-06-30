@@ -23,6 +23,19 @@ public class Task
     public Project? Project { get; set; }
     public ICollection<MiniTask> MiniTasks { get; set; } = new List<MiniTask>();
 
+    [NotMapped]
+    public DateTime? Deadline
+    {
+        get
+        {
+            if (MiniTasks == null || !MiniTasks.Any()) return null;
+            var validDeadlines = MiniTasks
+                .Where(m => m.Deadline.HasValue)
+                .Select(m => m.Deadline!.Value)
+                .ToList();
+            return validDeadlines.Any() ? validDeadlines.Max() : null;
+        }
+    }
 
     [ForeignKey(nameof(FeedbackSenderId))]
     public ApplicationUser? FeedbackSender { get; set; }
