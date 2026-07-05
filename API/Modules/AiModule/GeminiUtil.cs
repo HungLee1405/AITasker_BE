@@ -11,7 +11,6 @@ public class GeminiUtil
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
 
-    // Su dung dong model gemini-2.5-flash de xu ly context dai cuc muot va phan hoi nhanh
     private const string GeminiBaseUrl =
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
@@ -19,21 +18,12 @@ public class GeminiUtil
     {
         _httpClient = httpClient;
 
-        // Doc API Key tu appsettings.json (section "Gemini:ApiKey") hoac bien moi truong GEMINI_API_KEY
         _apiKey = configuration["Gemini:ApiKey"]
             ?? Environment.GetEnvironmentVariable("GEMINI_API_KEY")
             ?? throw new InvalidOperationException(
                 "Chua cau hinh Gemini API Key. Hay them vao appsettings.json (Gemini:ApiKey) hoac bien moi truong GEMINI_API_KEY.");
     }
 
-    // Goi Gemini API voi payload contents thuan tuy, khong ep JSON schema (dung cho cac tac vu tu do)
-    public async Task<string> CallGeminiApiAsync(object payload)
-    {
-        return await SendRequestAsync(payload);
-    }
-
-    // Goi Gemini API co system instruction rieng + ep buoc tra ve dung JSON (application/json)
-    // Day la ham nen dung cho AiChatService de dam bao Gemini KHONG BAO GIO tra loi bang van ban tu do
     public async Task<string> CallGeminiApiWithJsonModeAsync(string systemInstructionText, object[] contents)
     {
         var payload = new
