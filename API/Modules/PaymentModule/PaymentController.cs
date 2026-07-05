@@ -44,6 +44,7 @@ namespace AITasker.API.Modules.PaymentModule
         private string AppId  => _config["ZaloPay:AppId"]  ?? "2554";
         private string Key1   => _config["ZaloPay:Key1"]   ?? string.Empty;
         private string Key2   => _config["ZaloPay:Key2"]   ?? string.Empty;
+        private string CallbackUrl => _config["ZaloPay:CallbackUrl"] ?? string.Empty;
         private string ZaloPayCreateUrl => "https://sb-openapi.zalopay.vn/v2/create";
 
         public PaymentController(DataContext context, IConfiguration config, IHttpClientFactory httpClientFactory)
@@ -98,7 +99,8 @@ namespace AITasker.API.Modules.PaymentModule
                 ["item"]         = item,
                 ["description"]  = description,
                 ["bank_code"]    = "",  // Để trống → user tự chọn phương thức
-                ["mac"]          = mac
+                ["mac"]          = mac,
+                ["callback_url"] = CallbackUrl
             };
 
             try
