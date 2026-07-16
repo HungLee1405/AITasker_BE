@@ -135,7 +135,9 @@ public class UserService : IUserService
             DestinationWalletId = wallet.UserId,
             Amount = amount,
             Type = "Deposit",
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Status = "Success",
+            Description = "Nạp tiền vào tài khoản: " + amount.ToString("N0") + " VND"
         };
         _context.TransactionLogs.Add(log);
 
@@ -165,7 +167,9 @@ public class UserService : IUserService
             SourceWalletId = wallet.UserId,
             Amount = amount,
             Type = "Withdraw",
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            Status = "Success",
+            Description = "Rút tiền khỏi tài khoản: " + amount.ToString("N0") + " VND"
         };
         _context.TransactionLogs.Add(log);
 
